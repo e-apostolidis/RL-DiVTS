@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import torch
 import torch.optim as optim
 from torch.autograd import Variable
 from reward import aesthetics_reward, representativeness_reward

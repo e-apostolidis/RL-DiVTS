@@ -4,6 +4,6 @@
 
 for exp_id in $(seq 10 19); do
   for split_id in $(seq 0 9); do
-    python main.py --split_index "$split_id" --n_epochs 200 --batch_size 32 --video_type 'Youtube' --exp "$exp_id"
+    python model/main.py --split_index "$split_id" --n_epochs 200 --batch_size 32 --video_type 'Youtube' --exp "$exp_id"
   done
 done

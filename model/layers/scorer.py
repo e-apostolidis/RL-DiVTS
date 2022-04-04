@@ -10,7 +10,7 @@ class RL_DiVTS(nn.Module):
         :param int hidden_size: The number of features in the hidden state
         :param int num_layers: Number of recurrent layers.
         """
-        super(RL_DiVTS).__init__()
+        super(RL_DiVTS, self).__init__()
 
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers, bidirectional=True)
         self.out = nn.Sequential(nn.Linear(hidden_size * 2, 1),  # bidirectional => scalar
