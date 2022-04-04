@@ -52,7 +52,7 @@ class VideoData(Dataset):
 
     def __getitem__(self, index):
         """ Function to be called for the index operator of `VideoData` Dataset, returning:
-            the frame features, the video name and the frame-level aesthetic quality scores
+            the frame features, the video name and the frame-level aesthetic quality scores.
 
        :param int index: The above-mentioned id of the data.
        """

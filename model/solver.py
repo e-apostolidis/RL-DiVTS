@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import torch.optim as optim
 from torch.autograd import Variable
-from reward import *
+from reward import aesthetics_reward, representativeness_reward
 import json
 import numpy as np
 import random
@@ -9,17 +9,15 @@ from tqdm import tqdm, trange
 import os
 from torch.distributions import Categorical
 import torch.nn.functional as F
-
 from layers import RL_DiVTS
 from utils import TensorboardWriter
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 weight_factor = {"OVP": 1000, "Youtube": 25000}
 
 
 class Solver(object):
     def __init__(self, config=None, train_loader=None, test_loader=None):
-        """ Class that Builds, Trains and Evaluates the RL-DiVTS model"""
+        """ Class that Builds, Trains and Evaluates the RL-DiVTS model. """
         # Initialize variables to None, to be safe
         self.model, self.optimizer, self.writer = None, None, None
 
@@ -39,7 +37,7 @@ class Solver(object):
         # Model creation
         self.model = RL_DiVTS(input_size=self.config.input_size,
                               hidden_size=self.config.hidden_size,
-                              num_layers=self.config.num_layers).cuda()
+                              num_layers=self.config.num_layers).to(self.config.device)
 
         if self.config.mode == 'train':
             self.optimizer = optim.Adam(list(self.model.parameters()), lr=self.config.lr)
@@ -70,16 +68,16 @@ class Solver(object):
                     image_features, video_name, aes_scores_mean = next(iterator)
 
                     # get the frame-level aesthetic scores ready for use
-                    aesthetic_quality = aes_scores_mean.squeeze(0).cuda()             # [seq_len]
+                    aesthetic_quality = aes_scores_mean.squeeze(0).to(self.config.device)  # [T]
 
-                    image_features = image_features.view(-1, self.config.input_size)  # [seq_len, input_size]
-                    image_features_ = Variable(image_features).cuda()
+                    image_features = image_features.view(-1, self.config.input_size)       # [T, input_size]
+                    image_features_ = Variable(image_features).to(self.config.device)
                     num_of_frames = image_features_.shape[0]
 
                     # compute the frame-level importance scores
-                    original_features = image_features_.unsqueeze(1)  # [seq_len, 1, input_size]
-                    scores = self.model(original_features)            # [seq_len, 1]
-                    importance = scores.squeeze(1)                    # [seq_len]
+                    original_features = image_features_.unsqueeze(1)  # [T, 1, input_size]
+                    scores = self.model(original_features)            # [T, 1]
+                    importance = scores.squeeze(1)                    # [T]
 
                     # compute the overall score for each frame
                     starting_overall_score = aesthetic_quality * importance
@@ -90,7 +88,7 @@ class Solver(object):
                     starting_overall_score = (starting_overall_score - min_score) / (max_score - min_score)
 
                     # Frame Picking Mechanism
-                    sl = torch.tensor(0, dtype=torch.float32, device=torch.device('cuda'), requires_grad=True)
+                    sl = torch.tensor(0, dtype=torch.float32, device=self.config.device, requires_grad=True)
                     s_loss = sl.clone()
 
                     # compute the pair-wise frame similarity scores
@@ -108,7 +106,7 @@ class Solver(object):
                                 print("The overall score for each frame consists of all negative or zero values.")
 
                             dist = Categorical(overall_score)
-                            picked_frame = dist.sample()     # returns a scalar between 0 and (num_of_frames - 1)
+                            picked_frame = dist.sample()     # returns a scalar between 0 and (T - 1)
                             picks.append(picked_frame)
 
                             log_prob_picks = dist.log_prob(picked_frame)
@@ -121,7 +119,7 @@ class Solver(object):
                             max_score = torch.max(overall_score)
                             overall_score = (overall_score - min_score) / (max_score - min_score)
 
-                        picks_binary = (torch.zeros(num_of_frames)).cuda()
+                        picks_binary = (torch.zeros(num_of_frames)).to(self.config.device)
                         picks_binary[torch.stack(picks)] = 1.
 
                         # Compute the Aesthetics Reward for the selected set of thumbnails
@@ -137,9 +135,9 @@ class Solver(object):
                         expected_reward = log_prob_over_episode * (reward - baselines[video_name[0]])
                         s_loss -= expected_reward       # minimize negative expected reward
 
-                        epis_rewards.append(torch.tensor([reward], dtype=torch.float, device=device))
-                        epis_aes_rewards.append(torch.tensor([aes_reward], dtype=torch.float, device=device))
-                        epis_rep_rewards.append(torch.tensor([rep_reward], dtype=torch.float, device=device))
+                        epis_rewards.append(torch.tensor([reward], dtype=torch.float, device=self.config.device))
+                        epis_aes_rewards.append(torch.tensor([aes_reward], dtype=torch.float, device=self.config.device))
+                        epis_rep_rewards.append(torch.tensor([rep_reward], dtype=torch.float, device=self.config.device))
 
                     s_loss.backward()
                     baselines[video_name[0]] = 0.9 * baselines[video_name[0]] + 0.1 * torch.mean(torch.stack(epis_rewards))
@@ -189,18 +187,18 @@ class Solver(object):
         num_of_picks = self.config.selected_thumbs
         out_dict = {}
         for image_features, video_name, aes_scores_mean in tqdm(self.test_loader, desc='Evaluate', ncols=80, leave=False):
-            image_features = image_features.view(-1, self.config.input_size)  # [seq_len, input_size]
-            image_features_ = Variable(image_features).cuda()
-            original_features = image_features_.unsqueeze(1)                  # [seq_len, 1, input_size]
+            image_features = image_features.view(-1, self.config.input_size)           # [T, input_size]
+            image_features_ = Variable(image_features).to(self.config.device)
+            original_features = image_features_.unsqueeze(1)                           # [T, 1, input_size]
             num_of_frames = image_features_.shape[0]
 
             with torch.no_grad():
                 # Get the frame-level aesthetic scores ready for use
-                aesthetic_quality = aes_scores_mean.squeeze(0).cuda()         # [seq_len]
+                aesthetic_quality = aes_scores_mean.squeeze(0).to(self.config.device)  # [T]
 
                 # Compute the frame-level importance scores
-                scores = self.model(original_features)                        # [seq_len, 1]
-                importance = scores.squeeze(1)                                # [seq_len]
+                scores = self.model(original_features)                                 # [T, 1]
+                importance = scores.squeeze(1)                                         # [T]
 
                 # Compute the overall score for each frame
                 overall_score = aesthetic_quality * importance
@@ -219,7 +217,7 @@ class Solver(object):
                 picks = []
                 for pick in range(num_of_picks):
                     dist = Categorical(overall_score)
-                    picked_frame = dist.sample()        # returns a scalar between 0 and (num_of_frames - 1)
+                    picked_frame = dist.sample()        # returns a scalar between 0 and (T - 1)
                     picks.append(picked_frame)
 
                     overall_score = overall_score * (1 - similarity[picked_frame])
@@ -229,13 +227,13 @@ class Solver(object):
                     max_score = torch.max(overall_score)
                     overall_score = (overall_score - min_score) / (max_score - min_score)
 
-                picks_binary = (torch.zeros(num_of_frames)).cuda()
+                picks_binary = (torch.zeros(num_of_frames)).to(self.config.device)
                 picks_binary[torch.stack(picks)] = 1.
 
-                increase_picks = (torch.ones(num_of_frames)).cuda()
+                increase_picks = (torch.ones(num_of_frames)).to(self.config.device)
                 increase_picks = increase_picks + picks_binary
 
-                weighted_scores = increase_picks.unsqueeze(1) * scores        # [seq_len, 1]
+                weighted_scores = increase_picks.unsqueeze(1) * scores        # [T, 1]
                 weighted_scores = weighted_scores.squeeze(1)
                 weighted_scores = weighted_scores.cpu().numpy().tolist()
 
