@@ -1,4 +1,4 @@
-#Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning
+# Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning
 
 ## PyTorch Implementation of RL-DiVTS  
 <div align="justify">
