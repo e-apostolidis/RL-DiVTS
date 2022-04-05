@@ -5,6 +5,8 @@
 
 - From **"RL-DiVTS: Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning"**.
 - Written by Evlampios Apostolidis, Georgios Balaouras, Vasileios Mezaris and Ioannis Patras.
+- This software can be used for training a deep learning architecture for video thumbnail selection, which quantifies the representativeness and the aesthetic quality of the selected thumbnails using deterministic reward functions, and integrates a frame picking mechanism that takes frames’ diversity into account. After being unsupervised trained on a collection of videos, the `RL-DiVTS` is capable of selecting a diverse set of representative and aesthetically-pleasing video thumbnails for unseen videos, according to a user-specified value about the number of required thumbnails.
+</div>
 
 ## Main dependencies
 Developed, checked and verified on an `Ubuntu 20.04.3` PC with an `NVIDIA RTX 2080Ti` GPU and an `i5-11600K` CPU. Main packages required:
@@ -15,12 +17,12 @@ Developed, checked and verified on an `Ubuntu 20.04.3` PC with an `NVIDIA RTX 20
 ## Data
 <div align="justify">
 
-Structured h5 files with the video features and annotations of the OVP and YouΤube datasets are available within the [data](data) folder. The GoogleNet features of the video frames were extracted by [Ke Zhang](https://github.com/kezhang-cs) and [Wei-Lun Chao](https://github.com/pujols) and the h5 files were obtained from [Kaiyang Zhou](https://github.com/KaiyangZhou/pytorch-vsumm-reinforce). These files have the following structure:
+Structured h5 files with the video features and annotations of the OVP and YouΤube datasets are available within the [data](data) folder. These files have the following structure:
 <pre><code>/key
     /features                 2D-array with shape (n_steps, feature-dimension), feature vectors representing the content of the video frames; extracted from the pool5 layer of a GoogleNet trained on the ImageNet dataset
     /aesthetic_scores_mean    1D-array with shape (n_steps), scores representing the aesthetic quality of the video frames; computed as the softmax of the values in the final layer of a model of a <a href="https://github.com/bmezaris/fully_convolutional_networks" target="_blank">Fully Convolutional Network</a> trained on the AVA dataset
     /n_frames                 number of frames in original video
-    /ssim_matrix              2D-array with shape (top-5 selected thumbs, n_frames), the structural similarity scores between each of the five most selected thumbnails by the human annotators (in order to support evaluation using 'Precision at 5') and the entire frame sequence; computed using the <a href="https://scikit-image.org/docs/dev/api/skimage.metrics.html#skimage.metrics.structural_similarity" target="_blank">structural_similarity function</a> of Python
+    /ssim_matrix              2D-array with shape (M, n_frames), the structural similarity scores between each of the M (can be more than five if they exist more than five key-frames with the same ranking according to the number of selections made by the human annotators) most selected thumbnails by the human annotators (in order to support evaluation using 'Precision at 5') and the entire frame sequence; computed using the <a href="https://scikit-image.org/docs/dev/api/skimage.metrics.html#skimage.metrics.structural_similarity" target="_blank">structural_similarity function</a> of Python
     /top1_thumbnail_ids       the index of the most selected thumbnail by the human annotators (can be more than one if they exist more than one key-frames with the same ranking according to the number of selections made by the human annotators)
     /top3_thumbnail_ids       the indices of the three most selected thumbnails by the human annotators (can be more than three if they exist more than three key-frames with the same ranking according to the number of selections made by the human annotators)
 </code></pre>
