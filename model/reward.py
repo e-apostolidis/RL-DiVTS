@@ -7,7 +7,7 @@ def aesthetics_reward(aesthetic_scores, selections, num_of_picks):
     """ Computes the average aesthetic score for the set of selected thumbnails.
 
     :param torch.Tensor aesthetic_scores: A tensor of aesthetic scores with shape [1, T]
-    :param torch.Tensor selections: Binary valued tensor, contains the selected (1) and non-selected frames e.g. [1, 0, 0, 1]
+    :param torch.Tensor selections: Binary valued tensor with values indicating the selected (1) and non-selected frames e.g. [1, 0, 0, 1]
     :param int num_of_picks: The number of selected thumbnails
     :return: A (float) scalar that represents the aesthetics reward
     """
@@ -24,7 +24,7 @@ def diversity_reward(image_features, selections):
 
     :param torch.Tensor image_features: Tensor of shape [T, input_size] containing the frame features produced by
            using the pool5 layer of GoogleNet.
-    :param torch.Tensor selections: Binary valued tensor, contains the selected (1) and non-selected frames e.g. [1, 0, 0, 1]
+    :param torch.Tensor selections: Binary valued tensor with values indicating the selected (1) and non-selected frames e.g. [1, 0, 0, 1]
     :return: A (float) scalar that represents the diversity reward
     """
     actual_picks = torch.count_nonzero(selections)
@@ -47,7 +47,7 @@ def representativeness_reward(image_features, selections):
 
     :param torch.Tensor image_features: Tensor of shape [T, input_size] containing the frame features produced by
            using the pool5 layer of GoogleNet.
-    :param list[torch.Tensor] selections: Contains the indices of the selected frames
+    :param list[torch.Tensor] selections: Contains the frame indices of the selected thumbnails
     :return: A (float) scalar that represents the representativeness reward
     """
 
