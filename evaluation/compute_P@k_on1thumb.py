@@ -27,7 +27,7 @@ for split in range(10):
 		video_names = list(data.keys())
 
 	for video_name in video_names:
-		imp_scores = np.asarray(data[video_name])  		  # Read the results (importance scores) for a video and
+		imp_scores = np.asarray(data[video_name])  # Read the results (importance scores) for a video and
 		sorted_score_inds = np.argsort(imp_scores)[::-1]  # sort them (desc.) to find the frames with the max imp. score
 
 		# Read the initial number of frames for the video (before sampling)
