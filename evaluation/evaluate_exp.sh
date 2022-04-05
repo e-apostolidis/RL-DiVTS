@@ -6,7 +6,7 @@
 # Then, compute the P@k (k=1, 3) based on the top-3 and top-1 selected user thumbnails, respectively.
 
 # example of use: sh evaluate.sh exp1 OVP
-base_path="../RL-DiVTS/Summaries"
+base_path="../RL-DiVTS/Thumbnails"
 exp_id=$1
 dataset_name=$2
 
