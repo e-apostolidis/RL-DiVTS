@@ -76,9 +76,7 @@ chmod +x model/run_youtube_splits.sh    # Makes the script executable.
 ./model/run_ovp_splits.sh               # Runs the script. 
 ./model/run_youtube_splits.sh           # Runs the script.  
 ```
-These scripts allow the execution of multiple runs using the set of 10 splits, in order to facilitate the implementation of the adopted evaluation strategy that was based on 10 different runs.
-    
-Please note that after each training epoch the algorithm performs an evaluation step, using the trained model to compute the importance scores for the frames of each video of the test set. These scores are then used by the provided [evaluation](evaluation) scripts to assess the overall performance of the model.
+Please note that after each training epoch the algorithm performs an evaluation step, using the trained model to compute the importance scores for the frames of each video of the test set. These scores are then used by the provided [evaluation](evaluation) scripts to assess the overall performance of the model. Last but not least, the above mentioned [`run_ovp_splits.sh`](model/run_ovp_splits.sh) and/or [`run_youtube_splits.sh`](model/run_youtube_splits.sh) scripts allow the execution of multiple runs using the set of 10 splits, in order to facilitate the implementation of the adopted evaluation strategy that was based on 10 different runs.
 
 The progress of the training can be monitored via the TensorBoard platform and by:
 - opening a Terminal and executing the following command: `tensorboard --logdir=/path/to/log-directory --host=localhost`
