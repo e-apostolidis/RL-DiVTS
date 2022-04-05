@@ -6,7 +6,7 @@
 - From **"Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning"**.
 - Written by Evlampios Apostolidis, Georgios Balaouras, Vasileios Mezaris and Ioannis Patras.
 - This software can be used for training a deep learning architecture for video thumbnail selection, which quantifies the representativeness and the aesthetic quality of the selected thumbnails using deterministic reward functions, and integrates a frame picking mechanism that takes frames’ diversity into account. After being trained on a collection of videos, `RL-DiVTS`'s Thumbnail Selector  is capable of selecting a diverse set of representative and aesthetically-pleasing video thumbnails for unseen videos, according to a user-specified value about the number of required thumbnails.
-- The PyTorch Implementation of the `ARL-VTS` video thumbnail selection method, that is also presented and evaluated in this paper, is available at [`ARL-VTS`](https://github.com/e-apostolidis/Video-Thumbnail-Selector).
+- The PyTorch Implementation of the `ARL-VTS` video thumbnail selection method, that is also presented and evaluated in the paper, is available at [`ARL-VTS`](https://github.com/e-apostolidis/Video-Thumbnail-Selector).
 </div>
 
 ## Main dependencies
@@ -67,7 +67,7 @@ For training the model using a single split, run:
 ```bash
 python model/main.py --split_index N --n_epochs E --batch_size B --video_type 'dataset_name' --exp ID
 ```
-where, `N` refers to the index of the used data split, `E` refers to the number of training epochs, `B` refers to the batch size, `dataset_name` refers to the name of the used dataset, and `ID` refers to the experimental serial number.
+where, `N` refers to the index of the used data split, `E` refers to the number of training epochs, `B` refers to the batch size, `dataset_name` refers to the name of the used dataset, and `ID` refers to index of the folder that will be used for storing the analysis results (default naming format: expID).
 
 Alternatively, to train the model for all 10 splits, use the [`run_ovp_splits.sh`](model/run_ovp_splits.sh) and/or [`run_youtube_splits.sh`](model/run_youtube_splits.sh) script and do the following:
 ```shell-script
@@ -79,14 +79,14 @@ chmod +x model/run_youtube_splits.sh    # Makes the script executable.
 Please note that after each training epoch the algorithm performs an evaluation step, using the trained model to compute the importance scores for the frames of each video of the test set. These scores are then used by the provided [evaluation](evaluation) scripts to assess the overall performance of the model.
 
 The progress of the training can be monitored via the TensorBoard platform and by:
-- opening a command line (cmd) and running: `tensorboard --logdir=/path/to/log-directory --host=localhost`
-- opening a browser and pasting the returned URL from cmd. 
+- opening a Terminal and executing the following command: `tensorboard --logdir=/path/to/log-directory --host=localhost`
+- and then opening a browser and pasting the returned URL after the execution of the above command in the Terminal 
 </div>
 
 ## Model Selection and Evaluation 
 <div align="justify">
 
-The utilized model selection criterion relies on the post-processing of the calculated losses over the training epochs and enables the selection of a well-trained model by indicating the training epoch, with the highest overall reward. To evaluate the trained models of the architecture and automatically select a well-trained one, define:
+The utilized model selection criterion relies on the optimization of a core factor of the training process (i.e., the maximization of the received reward) and enables the selection of a well-trained model by indicating the training epoch. To evaluate the trained models of the architecture and automatically select a well-trained one, define:
  - the [`h5_file_path`](evaluation/compute_P%40k.py#L12) in [`compute_P@k.py`](evaluation/compute_P%40k.py),
  - the [`h5_file_path`](evaluation/compute_P%40k_on1thumb.py#L12) in [`compute_P@k_on1thumb.py`](evaluation/compute_P%40k_on1thumb.py),
  - the [`base_path`](evaluation/evaluate_exp.sh#L9) in [`evaluate_exp.sh`](evaluation/evaluate_exp.sh),
