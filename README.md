@@ -1,12 +1,12 @@
-# RL-DiVTS: Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning
+#Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning
 
 ## PyTorch Implementation of RL-DiVTS  
 <div align="justify">
 
-- From **"RL-DiVTS: Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning"**.
+- From **"Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning"**.
 - Written by Evlampios Apostolidis, Georgios Balaouras, Vasileios Mezaris and Ioannis Patras.
 - This software can be used for training a deep learning architecture for video thumbnail selection, which quantifies the representativeness and the aesthetic quality of the selected thumbnails using deterministic reward functions, and integrates a frame picking mechanism that takes frames’ diversity into account. After being trained on a collection of videos, `RL-DiVTS`'s Thumbnail Selector  is capable of selecting a diverse set of representative and aesthetically-pleasing video thumbnails for unseen videos, according to a user-specified value about the number of required thumbnails.
-- The code for the `ARL-VTS` video thumbnail selection method, that is also presented and evaluated in this paper, is available at [`ARL-VTS`](https://github.com/e-apostolidis/Video-Thumbnail-Selector).
+- The PyTorch Implementation of the `ARL-VTS` video thumbnail selection method, that is also presented and evaluated in this paper, is available at [`ARL-VTS`](https://github.com/e-apostolidis/Video-Thumbnail-Selector).
 </div>
 
 ## Main dependencies
@@ -23,7 +23,7 @@ Structured h5 files with the video features and annotations of the OVP and YouΤ
     /features                 2D-array with shape (n_steps, feature-dimension), feature vectors representing the content of the video frames; extracted from the pool5 layer of a GoogleNet trained on the ImageNet dataset
     /aesthetic_scores_mean    1D-array with shape (n_steps), scores representing the aesthetic quality of the video frames; computed as the softmax of the values in the final layer of a model of a <a href="https://github.com/bmezaris/fully_convolutional_networks" target="_blank">Fully Convolutional Network</a> trained on the AVA dataset
     /n_frames                 number of frames in original video
-    /ssim_matrix              2D-array with shape (M, n_frames), the structural similarity scores between each of the M (can be more than five if they exist more than five key-frames with the same ranking according to the number of selections made by the human annotators) most selected thumbnails by the human annotators (in order to support evaluation using 'Precision at 5') and the entire frame sequence; computed using the <a href="https://scikit-image.org/docs/dev/api/skimage.metrics.html#skimage.metrics.structural_similarity" target="_blank">structural_similarity function</a> of Python
+    /ssim_matrix              2D-array with shape (M, n_frames), the structural similarity scores between each of the M most selected thumbnails by the human annotators and the entire frame sequence (to support evaluation using 'Precision at 5' the number of selected thumbnails by the human annotators was set equal to five; however, M can be more than five if they exist more than five key-frames with the same ranking according to the number of selections made by the human annotators); the structural similarity scores were computed using the <a href="https://scikit-image.org/docs/dev/api/skimage.metrics.html#skimage.metrics.structural_similarity" target="_blank">structural_similarity function</a> of Python
     /top1_thumbnail_ids       the index of the most selected thumbnail by the human annotators (can be more than one if they exist more than one key-frames with the same ranking according to the number of selections made by the human annotators)
     /top3_thumbnail_ids       the indices of the three most selected thumbnails by the human annotators (can be more than three if they exist more than three key-frames with the same ranking according to the number of selections made by the human annotators)
 </code></pre>
