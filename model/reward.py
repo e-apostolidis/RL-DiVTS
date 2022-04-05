@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 def aesthetics_reward(aesthetic_scores, selections, num_of_picks):
-    """ Computes the average aesthetic score for the collection of selected frames.
+    """ Computes the average aesthetic score for the collection of selected thumbnails.
 
     :param torch.Tensor aesthetic_scores: A tensor of aesthetic scores with shape [1, T]
     :param torch.Tensor selections: Binary valued tensor, contains the selected (1) and non-selected frames e.g. [1, 0, 0, 1]
@@ -20,7 +20,7 @@ def aesthetics_reward(aesthetic_scores, selections, num_of_picks):
 
 
 def diversity_reward(image_features, selections):
-    """ Computes the average diversity score for the collection of selected frames.
+    """ Computes the average diversity score for the collection of selected thumbnails.
 
     :param torch.Tensor image_features: Tensor of shape [T, input_size] containing the frame features produced by
            using the pool5 layer of GoogleNet.
@@ -43,7 +43,7 @@ def diversity_reward(image_features, selections):
 
 
 def representativeness_reward(image_features, selections):
-    """ Computes the representativeness score for the collection of selected frames.
+    """ Computes the representativeness score for the collection of selected thumbnails.
 
     :param torch.Tensor image_features: Tensor of shape [T, input_size] containing the frame features produced by
            using the pool5 layer of GoogleNet.
