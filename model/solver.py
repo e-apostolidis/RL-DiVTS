@@ -123,10 +123,10 @@ class Solver(object):
                         picks_binary = (torch.zeros(num_of_frames)).to(self.config.device)
                         picks_binary[torch.stack(picks)] = 1.
 
-                        # Compute the Aesthetics Reward for the selected set of thumbnails
+                        # Compute the Aesthetics Reward for the set of selected thumbnails
                         aes_reward = aesthetics_reward(aesthetic_quality, picks_binary, num_of_picks)
 
-                        # Compute the Representativeness Reward for the selected set of thumbnails
+                        # Compute the Representativeness Reward for the set of selected thumbnails
                         rep_reward = weight_factor[self.config.video_type] * representativeness_reward(image_features_, picks)
 
                         # Compute the overall reward
