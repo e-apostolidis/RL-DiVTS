@@ -5,7 +5,7 @@
 
 - From **"RL-DiVTS: Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning"**.
 - Written by Evlampios Apostolidis, Georgios Balaouras, Vasileios Mezaris and Ioannis Patras.
-- This software can be used for training a deep learning architecture for video thumbnail selection, which quantifies the representativeness and the aesthetic quality of the selected thumbnails using deterministic reward functions, and integrates a frame picking mechanism that takes frames’ diversity into account. After being unsupervised trained on a collection of videos, the `RL-DiVTS` is capable of selecting a diverse set of representative and aesthetically-pleasing video thumbnails for unseen videos, according to a user-specified value about the number of required thumbnails.
+- This software can be used for training a deep learning architecture for video thumbnail selection, which quantifies the representativeness and the aesthetic quality of the selected thumbnails using deterministic reward functions, and integrates a frame picking mechanism that takes frames’ diversity into account. After being unsupervised trained on a collection of videos, `RL-DiVTS`'s Thumbnail Selector  is capable of selecting a diverse set of representative and aesthetically-pleasing video thumbnails for unseen videos, according to a user-specified value about the number of required thumbnails.
 </div>
 
 ## Main dependencies
@@ -30,13 +30,14 @@ Original videos and annotations for each dataset are also available here:
 - <a href="https://sites.google.com/site/vsummsite/download" target="_blank"><img align="center" src="https://img.shields.io/badge/Datasets-OVP,%20YouTube-green"/></a>
 </div>
  
- ## Configurations
+## Configurations
 <div align="justify">
 
 Setup for the training process:
  - In [`data_loader.py`](model/data_loader.py#L19:L21), specify the path to the h5 file of the used dataset, and the path to the JSON file containing data about the utilized data splits.
- - In [`configs.py`](model/configs.py#L7), define the directory where the analysis results will be saved to. </div>
-   
+ - In [`configs.py`](model/configs.py#L7), define the directory where the analysis results will be saved to.
+</div>
+ 
 Arguments in [`configs.py`](model/configs.py): 
 |Parameter name | Description | Default Value | Options
 | :--- | :--- | :---: | :---:
@@ -78,7 +79,8 @@ Please note that after each training epoch the algorithm performs an evaluation 
 
 The progress of the training can be monitored via the TensorBoard platform and by:
 - opening a command line (cmd) and running: `tensorboard --logdir=/path/to/log-directory --host=localhost`
-- opening a browser and pasting the returned URL from cmd. </div>
+- opening a browser and pasting the returned URL from cmd. 
+</div>
 
 ## Model Selection and Evaluation 
 <div align="justify">
@@ -94,7 +96,8 @@ sh evaluation/evaluate_exp.sh '$exp_id' '$dataset_name'
 ```
 where, `$exp_id` is the ID of the current evaluated experiment, and `$dataset_name` refers to the dataset being used.
 
-For further details about the adopted structure of directories in our implementation, please check line [#13](evaluation/evaluate_exp.sh#L13) and line [#17](evaluation/evaluate_exp.sh#L17) of [`evaluate_exp.sh`](evaluation/evaluate_exp.sh). </div>
+For further details about the adopted structure of directories in our implementation, please check line [#13](evaluation/evaluate_exp.sh#L13) and line [#17](evaluation/evaluate_exp.sh#L17) of [`evaluate_exp.sh`](evaluation/evaluate_exp.sh).
+</div>
 
 ## Citation
 <div align="justify">
@@ -116,4 +119,4 @@ This software is provided by the authors "as is" and any express or implied warr
 </div>
 
 ## Acknowledgement
-<div align="justify"> This work was supported by the EU Horizon 2020 programme under grant agreement H2020-832921 MIRROR. </div>
+<div align="justify"> This work was supported by the EU Horizon 2020 programme under grant agreement H2020-832921 MIRROR, and by EPSRC under grant No. EP/R026424/1. </div>

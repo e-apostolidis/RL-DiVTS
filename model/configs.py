@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 import pprint
 
-save_dir = Path('.../RL-DiVTS/Summaries/exp1')
+save_dir = Path('../RL-DiVTS/Summaries/exp1')
 
 
 def str2bool(v):
@@ -65,7 +65,7 @@ def get_config(parse=True, **optional_kwargs):
     parser.add_argument('--hidden_size', type=int, default=512, help='Number of features in the LSTM hidden state')
     parser.add_argument('--num_layers', type=int, default=2, help='Number of LSTM recurrent layers')
     parser.add_argument('--n_episodes', type=int, default=10, help='Number of training episodes per epoch')
-    parser.add_argument('--selected_thumbs', type=float, default=5, help='Number of selected thumbnails')
+    parser.add_argument('--selected_thumbs', type=int, default=5, help='Number of selected thumbnails')
 
     # Train
     parser.add_argument('--n_epochs', type=int, default=200, help='Number of training epochs')

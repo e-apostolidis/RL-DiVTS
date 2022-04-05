@@ -62,7 +62,7 @@ class Solver(object):
                 self.optimizer.zero_grad()
 
                 if self.config.verbose:
-                    tqdm.write('Training Scorer...')
+                    tqdm.write('Training model...')
 
                 for video in range(self.config.batch_size):
                     # load the frame features and the pre-computed aesthetic scores of the current sample (video)
@@ -132,8 +132,9 @@ class Solver(object):
                         # Compute the overall reward
                         reward = (0.5 * rep_reward) + (0.5 * aes_reward)
 
-                        log_prob_over_episode = torch.mean(torch.stack(log_prob_over_picks))
+                        log_prob_over_episode = torch.sum(torch.stack(log_prob_over_picks))
                         expected_reward = log_prob_over_episode * (reward - baselines[video_name[0]])
+                        expected_reward = torch.mean(expected_reward)
                         s_loss -= expected_reward       # minimize negative expected reward
 
                         epis_rewards.append(torch.tensor([reward], dtype=torch.float, device=self.config.device))
