@@ -89,6 +89,8 @@ The progress of the training can be monitored via the TensorBoard platform and b
 ## Model Selection and Evaluation 
 <div align="justify">
 
+The top-3 selected key-frames, among all annotators for a given video, were considered as the ground-truth thumbnails for this video. As a side note, through this procedure some videos are associated with more than 3 ground-truth thumbnails, due to the existence of more than 3 key-frames with the same ranking according to the number of selections made by the human annotators. Furthermore, in terms of the utilized measure, we quantified the performance of the `RL-DiVTS` method based on a top-3 matching process - i.e., the top-3 selected thumbnails by our method against the top-3 ground-truth thumbnails. Finally, we measured the performance when considering only the top-1 machine- and user-selected thumbnails for each video. More details about the evaluation protocol can be found in Section 4.1 of our work.
+
 The utilized model selection criterion relies on the optimization of a core factor of the training process (i.e., the maximization of the received reward) and enables the selection of a well-trained model by indicating the training epoch. To evaluate the trained models of the architecture and automatically select a well-trained one, define:
  - the [`h5_file_path`](evaluation/compute_P%40k.py#L12) in [`compute_P@k.py`](evaluation/compute_P%40k.py),
  - the [`h5_file_path`](evaluation/compute_P%40k_on1thumb.py#L12) in [`compute_P@k_on1thumb.py`](evaluation/compute_P%40k_on1thumb.py),
@@ -98,9 +100,9 @@ and run [`evaluate_exp.sh`](evaluation/evaluate_exp.sh) via
 ```bash
 sh evaluation/evaluate_exp.sh '$exp_id' '$dataset_name'
 ```
-where, `$exp_id` is the ID of the current evaluated experiment, and `$dataset_name` refers to the dataset being used.
+where, `$exp_id` is the ID of the current evaluated experiment, and `$dataset_name` refers to the dataset being used. For further details about the adopted structure of directories in our implementation, please check line [#13](evaluation/evaluate_exp.sh#L13) and line [#17](evaluation/evaluate_exp.sh#L17) of [`evaluate_exp.sh`](evaluation/evaluate_exp.sh).
 
-For further details about the adopted structure of directories in our implementation, please check line [#13](evaluation/evaluate_exp.sh#L13) and line [#17](evaluation/evaluate_exp.sh#L17) of [`evaluate_exp.sh`](evaluation/evaluate_exp.sh).
+The evaluation results per data split are averaged across the 10 utilized splits to obtain the results of a single run. This procedure is repeated 10 times, and in our publication we report the average performance and the standard deviation over these runs.
 </div>
 
 ## Citation
