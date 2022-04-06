@@ -67,7 +67,10 @@ For training the model using a single split, run:
 ```bash
 python model/main.py --split_index N --n_epochs E --batch_size B --video_type 'dataset_name' --exp ID
 ```
-where, `N` refers to the index of the used data split, `E` refers to the number of training epochs, `B` refers to the batch size, `dataset_name` refers to the name of the used dataset, and `ID` refers to index of the folder that will be used for storing the analysis results (default naming format: expID).
+where, `N` refers to the index of the used data split, `E` refers to the number of training epochs, `B` refers to the batch size, `dataset_name` refers to the name of the used dataset, and `ID` refers to index of the folder that will be used for storing the analysis results (default naming format: expID). E.g. for the _first_ data split of _OVP_ dataset, a batch of _40_ videos (full-batch) and _100_ training epochs, stored in the _exp10_ folder
+```bash
+python model/main.py --split_index 0 --n_epochs 100 --batch_size 40 --video_type 'OVP' --exp 10
+```
 
 Alternatively, to train the model for all 10 splits, use the [`run_ovp_splits.sh`](model/run_ovp_splits.sh) and/or [`run_youtube_splits.sh`](model/run_youtube_splits.sh) script and do the following:
 ```shell-script
