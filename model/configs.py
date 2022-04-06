@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 import pprint
 
-save_dir = Path('../RL-DiVTS/Thumbnails/exp1')
+save_dir = Path('../RL-DiVTS/Thumbnails')
 
 
 def str2bool(v):
