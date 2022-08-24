@@ -51,10 +51,6 @@ class Solver(object):
         for epoch_i in trange(self.config.n_epochs, desc='Epoch', ncols=80):
             self.model.train()
 
-            # Baseline rewards for videos
-            train_keys = self.train_loader.dataset.split['train_keys']
-            baselines = {key: 0. for key in train_keys}
-
             reward_history, rep_reward_history, aes_reward_history = [], [], []
             num_batches = int(len(self.train_loader) / self.config.batch_size)  # full-batch or mini batch
             iterator = iter(self.train_loader)
@@ -104,7 +100,7 @@ class Solver(object):
                         overall_score = starting_overall_score.clone()
                         for pick in range(num_of_picks):
                             if torch.all(overall_score <= 0):
-                                print("The overall score for each frame consists of all negative or zero values.")
+                                print("The overall score for the frame consists of all negative or zero values.")
 
                             dist = Categorical(overall_score)
                             picked_frame = dist.sample()     # returns a scalar between 0 and (T - 1)
@@ -127,22 +123,22 @@ class Solver(object):
                         aes_reward = aesthetics_reward(aesthetic_quality, picks_binary, num_of_picks)
 
                         # Compute the Representativeness Reward for the set of selected thumbnails
-                        rep_reward = weight_factor[self.config.video_type] * representativeness_reward(image_features_, picks)
+                        rep_reward = weight_factor[self.config.video_type] * representativeness_reward(image_features_,
+                                                                                                       picks)
 
                         # Compute the overall reward
                         reward = (0.5 * rep_reward) + (0.5 * aes_reward)
 
                         log_prob_over_episode = torch.sum(torch.stack(log_prob_over_picks))
-                        expected_reward = log_prob_over_episode * (reward - baselines[video_name[0]])
-                        expected_reward = torch.mean(expected_reward)
-                        s_loss -= expected_reward       # minimize negative expected reward
+                        expected_reward = log_prob_over_episode * reward
+                        expected_reward = expected_reward / num_of_picks  # normalize reward by the num of sel. thumbs
+                        s_loss -= expected_reward                         # minimize negative expected reward
 
-                        epis_rewards.append(torch.tensor([reward], dtype=torch.float, device=self.config.device))
-                        epis_aes_rewards.append(torch.tensor([aes_reward], dtype=torch.float, device=self.config.device))
-                        epis_rep_rewards.append(torch.tensor([rep_reward], dtype=torch.float, device=self.config.device))
+                        epis_rewards.append(torch.tensor([reward]))
+                        epis_aes_rewards.append(torch.tensor([aes_reward]))
+                        epis_rep_rewards.append(torch.tensor([rep_reward]))
 
                     s_loss.backward()
-                    baselines[video_name[0]] = 0.9 * baselines[video_name[0]] + 0.1 * torch.mean(torch.stack(epis_rewards))
 
                     reward_mean = torch.mean(torch.stack(epis_rewards))
                     rep_reward_mean = torch.mean(torch.stack(epis_rep_rewards))
@@ -182,13 +178,14 @@ class Solver(object):
     def evaluate(self, epoch_i):
         """ Saves the frame's importance scores for the test videos in json format.
 
-        :param int epoch_i: The current training epoch.
+        :param int epoch_i: The current training epoch
         """
         self.model.eval()
 
         num_of_picks = self.config.selected_thumbs
         out_dict = {}
-        for image_features, video_name, aes_scores_mean in tqdm(self.test_loader, desc='Evaluate', ncols=80, leave=False):
+        for image_features, video_name, aes_scores_mean in tqdm(self.test_loader, desc='Evaluate',
+                                                                ncols=80, leave=False):
             image_features = image_features.view(-1, self.config.input_size)           # [T, input_size]
             image_features_ = Variable(image_features).to(self.config.device)
             original_features = image_features_.unsqueeze(1)                           # [T, 1, input_size]
@@ -232,24 +229,21 @@ class Solver(object):
                 picks_binary = (torch.zeros(num_of_frames)).to(self.config.device)
                 picks_binary[torch.stack(picks)] = 1.
 
-                increase_picks = (torch.ones(num_of_frames)).to(self.config.device)
-                increase_picks = increase_picks + picks_binary
-
-                weighted_scores = increase_picks.unsqueeze(1) * scores        # [T, 1]
+                weighted_scores = picks_binary.unsqueeze(1) + scores        # [T, 1]
                 weighted_scores = weighted_scores.squeeze(1)
                 weighted_scores = weighted_scores.cpu().numpy().tolist()
 
                 out_dict[video_name] = weighted_scores
 
-            if not os.path.exists(self.config.score_dir):
-                os.makedirs(self.config.score_dir)
+        if not os.path.exists(self.config.score_dir):
+            os.makedirs(self.config.score_dir)
 
-            score_save_path = self.config.score_dir.joinpath(f'{self.config.video_type}_{epoch_i}.json')
-            with open(score_save_path, 'w') as f:
-                if self.config.verbose:
-                    tqdm.write(f'Saving score at {str(score_save_path)}.')
-                json.dump(out_dict, f)
-            score_save_path.chmod(0o777)
+        score_save_path = self.config.score_dir.joinpath(f'{self.config.video_type}_{epoch_i}.json')
+        with open(score_save_path, 'w') as f:
+            if self.config.verbose:
+                tqdm.write(f'Saving score at {str(score_save_path)}.')
+            json.dump(out_dict, f)
+        score_save_path.chmod(0o777)
 
 
 if __name__ == '__main__':

@@ -10,8 +10,8 @@ save_dir = Path('../RL-DiVTS/Thumbnails')
 def str2bool(v):
     """ Transcode string to boolean.
 
-    :param str v: String to be transcoded.
-    :return: The boolean transcoding of the string.
+    :param str v: String to be transcoded
+    :return: The boolean transcoding of the string
     """
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
@@ -34,7 +34,7 @@ class Config(object):
     def set_dataset_dir(self, video_type='OVP'):
         """ Function that sets as class attributes the necessary directories for logging important training information.
 
-        :param str video_type: The Dataset being used, OVP or Youtube.
+        :param str video_type: The Dataset being used, OVP or Youtube
         """
         self.log_dir = save_dir.joinpath(f"exp{self.exp}", video_type, 'logs/split' + str(self.split_index))
         self.score_dir = save_dir.joinpath(f"exp{self.exp}", video_type, 'results/split' + str(self.split_index))
