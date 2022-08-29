@@ -89,18 +89,22 @@ The progress of the training can be monitored via the TensorBoard platform and b
 ## Evaluation and Model Selection 
 <div align="justify">
 
-Given a test video, the top-3 selected key-frames among all annotators for this video are considered as the ground-truth thumbnails. As a side note, through this procedure some videos are associated with more than 3 ground-truth thumbnails, due to the existence of more than 3 key-frames with the same ranking according to the number of selections made by the human annotators. In terms of the utilized measure we quantify the performance of the `RL-DiVTS` method based on a top-3 matching process - i.e., the top-3 selected thumbnails by our method against the top-3 ground-truth thumbnails. In addition, we measure the performance when considering only the top-1 machine- and user-selected thumbnails for each video. To reduce the effect of network initialization to the video thumbnail selection performance, all experiments (where each one involves the ten different random splits of the used data) are carried out for ten different random seeds, and in our work we report the average performance and the standard deviation over these runs. More details about the adopted evaluation protocol can be found in Section 4.1 of our work.
+Given a test video, the top-3 selected key-frames among all annotators for this video are considered as the ground-truth thumbnails. As a side note, through this procedure some videos are associated with more than 3 ground-truth thumbnails, due to the existence of more than 3 key-frames with the same ranking according to the number of selections made by the human annotators. 
 
-The utilized model selection criterion relies on the optimization of a core factor of the training process (i.e., the maximization of the received reward) and enables the selection of a well-trained model by indicating the training epoch. To evaluate the trained models of the architecture and automatically select a well-trained one, define:
- - the [`h5_file_path`](evaluation/compute_P%40k.py#L12) in [`compute_P@k.py`](evaluation/compute_P%40k.py),
- - the [`h5_file_path`](evaluation/compute_P%40k_on1thumb.py#L12) in [`compute_P@k_on1thumb.py`](evaluation/compute_P%40k_on1thumb.py),
- - the [`base_path`](evaluation/evaluate_exp.sh#L9) in [`evaluate_exp.sh`](evaluation/evaluate_exp.sh),
+In terms of evaluation, we considered two different scenarios. In the first scenario, the goal of video thumbnail selection is defined as having among the machine-selected thumbnails at least one that matches one of the user-selected (ground-truth) ones. `Acc@k/GT=λ` declares a hit if at least one of the `k` machine-selected thumbnails matches one (or more) of the `λ` ground-truth ones (i.e., their computed SSIM score is above a predefined threshold, that equals to 0.7). The lower the values of `k`, `λ` are, the more challenging this evaluation scenario becomes. In a second, even more challenging evaluation scenario, assuming `k = λ > 1`, the goal is to maximize the number of machine-selected thumbnails that match one (or more) of the ground-truth ones. This is equal to estimating `Acc@k/GT=λ` separately for each of the `k` machine-selected thumbnails, and averaging these results over `k`.<sup name="a1">[1](#f1)</sup> We denote this as `AVGAcc@k/GT=λ`.
 
-and run [`evaluate_exp.sh`](evaluation/evaluate_exp.sh) via
+The utilized model selection criterion relies on the the maximization of the received reward and enables the selection of a well-trained model by indicating the training epoch. In [evaluation](evaluation) we provide [evaluate_exp.sh](evaluation/evaluate_exp.sh) to evaluate the trained models of the architecture and automatically select a well-trained one, for a given experiment. Furthermore, [evaluate_all_exp.sh](evaluation/evaluate_all_exp.sh) can be used to enable the reproducibillity of our findings over 10 experimental runs. Finally, to run the abovementioned scripts, define:
+ - the `h5_file_path` in [`compute_score_single.py`](evaluation/compute_score_single.py#L21) and/or [`compute_score.py`](evaluation/compute_score.py#L21),
+ - the `base_path` in [`evaluate_exp.sh`](evaluation/evaluate_exp.sh#L9) and/or [`evaluate_all_exp.sh`](evaluation/evaluate_all_exp.sh#L9),
+
+and run
 ```bash
-sh evaluation/evaluate_exp.sh '$exp_id' '$dataset_name'
+    sh evaluation/evaluate_exp.sh '$exp_id' '$dataset_name' 'precision'  # for Acc@k/GT=λ
+    sh evaluation/evaluate_exp.sh '$exp_id' '$dataset_name' 'matching'   # for AVGAcc@k/GT=λ
 ```
-where, `$exp_id` is the ID of the current evaluated experiment, and `$dataset_name` refers to the dataset being used. For further details about the adopted structure of directories in our implementation, please check line [#13](evaluation/evaluate_exp.sh#L13) and line [#17](evaluation/evaluate_exp.sh#L17) of [`evaluate_exp.sh`](evaluation/evaluate_exp.sh).
+where, `$exp_id` is the ID of the current evaluated experiment, and `$dataset_name` refers to the dataset being used. The [`evaluate_all_exp.sh`](evaluation/evaluate_all_exp.sh) follows the same logic in arguments.
+
+<sup name="f1">1</sup> In this scenario, for the videos where there are more than one key-frames with the same ranking in one of the top-`λ` positions according to the number of selections made by the human annotators, we resolve draws (that would lead to more than `λ` ground-truth thumbnails) by keeping the frame(s) that come first according to the MSD (Most Significant Digit) Radix Sort of Python (which, e.g., sorts frame `#20` before frame `#3` based on the most significant digit). [↩](#a1) 
 </div>
 
 ## Citation
