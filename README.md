@@ -90,7 +90,7 @@ The progress of the training can be monitored via the TensorBoard platform and b
 
 Given a test video, the top-3 selected key-frames among all annotators for this video are considered as the ground-truth thumbnails. As a side note, through this procedure some videos are associated with more than 3 ground-truth thumbnails, due to the existence of more than 3 key-frames with the same ranking according to the number of selections made by the human annotators. Nevertheless, in our evaluations we use the three thumbnails that come first according to the MSD (Most Significant Digit) Radix Sort of Python (which, e.g., sorts frame `#20` before frame `#3` based on the most significant digit).
 
-In terms of evaluation, we applied the ``top-3 matching'' approach that measures the overlap between the top-3 machine- and human-selected thumbnails per video. We expressed this overlap as a scalar ranging in $[0,1]$ and computed the average score over all videos of the test set.
+In terms of evaluation, we applied the "top-3 matching" approach that measures the overlap between the top-3 machine- and human-selected thumbnails per video. We expressed this overlap as a scalar ranging in $[0,1]$ and computed the average score over all videos of the test set.
 
 The utilized model selection criterion relies on the maximization of the received reward and enables the selection of a well-trained model by indicating the training epoch. In [evaluation](evaluation) we provide [evaluate_all_exp.sh](evaluation/evaluate_all_exp.sh) to evaluate the trained models of the architecture and automatically select a well-trained one, for each conducted experiment. To run this script, define:
  - the `h5_file_path` in [`compute_score.py`](evaluation/compute_score.py#L17),
