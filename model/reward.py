@@ -19,6 +19,29 @@ def aesthetics_reward(aesthetic_scores, selections, num_of_picks):
     return aes_reward
 
 
+def diversity_reward(image_features, selections):
+    """ Computes the average diversity score for the set of selected thumbnails.
+
+    :param torch.Tensor image_features: Tensor of shape [T, input_size] containing the frame features produced by
+           using the pool5 layer of GoogleNet
+    :param torch.Tensor selections: Binary valued tensor with values indicating the selected (1) and non-selected frames e.g. [1, 0, 0, 1]
+    :return: A (float) scalar that represents the diversity reward
+    """
+    actual_picks = torch.count_nonzero(selections)
+    sel = selections.view(-1, 1)
+    masked_image_features = torch.mul(image_features, sel)
+
+    # Compute the intra-group similarity
+    x_unit = F.normalize(masked_image_features, p=2, dim=1)
+    similarity = x_unit @ x_unit.t()
+    similarity.fill_diagonal_(0.)
+    mean_similarity = similarity.sum() / (actual_picks * (actual_picks - 1))
+
+    div_reward = 1 - mean_similarity
+
+    return div_reward
+
+
 def representativeness_reward(image_features, selections):
     """ Computes the representativeness score for the set of selected thumbnails.
 
@@ -37,24 +60,3 @@ def representativeness_reward(image_features, selections):
     rep_reward = torch.exp(-mean_distance)
 
     return rep_reward
-
-
-def diversity_reward(image_features, selections):
-    """ Computes the average diversity score for the set of selected thumbnails.
-
-    :param torch.Tensor image_features: Tensor of shape [T, input_size] containing the frame features produced by
-           using the pool5 layer of GoogleNet
-    :param torch.Tensor selections: Binary valued tensor with values indicating the selected (1) and non-selected frames e.g. [1, 0, 0, 1]
-    :return: A (float) scalar that represents the diversity reward
-    """
-
-    pick_ids = torch.nonzero(selections)
-    selected_features = image_features[pick_ids]
-    selected_features = selected_features.squeeze(1)
-
-    selected_features_norm = F.normalize(selected_features, p=2, dim=1)
-
-    dist_matrix = torch.cdist(selected_features_norm, selected_features_norm, 2, 'donot_use_mm_for_euclid_dist')
-    div_reward = torch.mean(dist_matrix)
-
-    return div_reward
