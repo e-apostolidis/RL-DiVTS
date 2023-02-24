@@ -9,8 +9,9 @@ def choose_epoch(path):
     :param str path: The path to .csv file with the logged training data (received rewards).
     :return: A List[int] (0-based) that represents the selected epoch for each split.
     """
+
     best_epochs = []
-    for split in range(0, 10):
+    for split in range(0, 5):
         logs_file = path + '/logs/split' + str(split) + '/scalars.csv'
         losses = {}
         losses_names = []
@@ -27,13 +28,14 @@ def choose_epoch(path):
                     for col in range(len(row)):
                         losses[losses_names[col]].append(float(row[col]))
 
-        # Criterion: The received reward
+        # criterion: received reward
         reward = losses['reward_epoch']
         reward_t = torch.tensor(reward)
 
-        # Normalize values
+        # normalize values
         reward_t = reward_t / max(reward_t)
 
+        # keep the epoch that maximizes the received reward
         epoch = torch.argmax(reward_t)
         best_epochs.append(epoch.item())
 
