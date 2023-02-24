@@ -6,7 +6,7 @@
 - From **"Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning"**.
 - Written by Evlampios Apostolidis, Georgios Balaouras, Vasileios Mezaris and Ioannis Patras.
 - This software can be used for training a deep learning architecture for video thumbnail selection, which quantifies the representativeness and the aesthetic quality of the selected thumbnails using deterministic reward functions, and integrates a frame picking mechanism that takes frames’ diversity into account. After being trained on a collection of videos, `RL-DiVTS`'s Thumbnail Selector  is capable of selecting a diverse set of representative and aesthetically-pleasing video thumbnails for unseen videos, according to a user-specified value about the number of required thumbnails.
-- The PyTorch Implementation of the `ARL-VTS` video thumbnail selection method, that is also evaluated in the paper, is available at [`ARL-VTS`](https://github.com/e-apostolidis/Video-Thumbnail-Selector).
+- The PyTorch Implementation of the `ARL-VTS` video thumbnail selection method that is also evaluated in the paper, is available at [`ARL-VTS`](https://github.com/e-apostolidis/Video-Thumbnail-Selector). The PyTorch Implementation of the `AC-SUM-GAN` and `CA-SUM` video summarization methods that are also evaluated in the paper, are available at [`AC-SUM-GAN`](https://github.com/e-apostolidis/AC-SUM-GAN) and [`CA-SUM`](https://github.com/e-apostolidis/CA-SUM), respectively.
 </div>
 
 ## Main dependencies
