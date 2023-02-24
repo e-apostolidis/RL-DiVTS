@@ -10,15 +10,15 @@ class VideoData(Dataset):
     def __init__(self, mode, video_type, split_index):
         """ Custom Dataset class wrapper for loading the frame characteristics.
 
-        :param str mode: The mode of the model, train or test.
-        :param str video_type: The Dataset being used, OVP or Youtube.
-        :param int split_index: The index of the Dataset split being used.
+        :param str mode: The mode of the model, train or test
+        :param str video_type: The Dataset being used, OVP or Youtube
+        :param int split_index: The index of the Dataset split being used
         """
         self.mode = mode
         self.name = video_type.lower()
-        self.datasets = ['../RL-DiVTS/data/OVP/ovp.h5',
-                         '../RL-DiVTS/data/Youtube/youtube.h5']
-        self.splits_filename = ['../RL-DiVTS/data/splits/' + self.name + '_splits.json']
+        self.datasets = ['../data/OVP/ovp.h5',
+                         '../data/Youtube/youtube.h5']
+        self.splits_filename = ['../data/splits/' + self.name + '_splits.json']
         self.split_index = split_index
 
         if 'ovp' in self.splits_filename[0]:
@@ -31,10 +31,7 @@ class VideoData(Dataset):
 
         with open(self.splits_filename[0]) as f:
             data = json.loads(f.read())
-            for i, split in enumerate(data):
-                if i == self.split_index:
-                    self.split = split
-                    break
+            self.split = data[self.split_index]
 
         for video_name in self.split[self.mode + '_keys']:
             features = torch.Tensor(np.array(hdf[video_name + '/features']))
@@ -54,7 +51,7 @@ class VideoData(Dataset):
         """ Function to be called for the index operator of `VideoData` Dataset, returning:
             the frame features, the video name and the frame-level aesthetic quality scores.
 
-       :param int index: The above-mentioned id of the data.
+       :param int index: The above-mentioned id of the data
        """
         video_name = self.split[self.mode + '_keys'][index]
         frame_features = self.list_features[index]
@@ -66,10 +63,10 @@ def get_loader(mode, video_type, split_index):
     """ Loads the `data.Dataset` of the `split_index` split for the `video_type` Dataset.
     Wrapped by a Dataloader, shuffled and `batch_size` = 1 in train `mode`.
 
-    :param str mode: The mode of the model, train or test.
-    :param str video_type: The Dataset being used, OVP or Youtube.
-    :param int split_index: The index of the Dataset split being used.
-    :return: The Dataset used in each mode.
+    :param str mode: The mode of the model, train or test
+    :param str video_type: The Dataset being used, OVP or Youtube
+    :param int split_index: The index of the Dataset split being used
+    :return: The Dataset used in each mode
     """
     if mode.lower() == 'train':
         vd = VideoData(mode, video_type, split_index)
