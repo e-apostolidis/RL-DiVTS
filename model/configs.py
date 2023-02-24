@@ -4,14 +4,14 @@ import argparse
 from pathlib import Path
 import pprint
 
-save_dir = Path('../RL-DiVTS/Thumbnails')
+save_dir = Path('../runs/')
 
 
 def str2bool(v):
     """ Transcode string to boolean.
 
-    :param str v: String to be transcoded.
-    :return: The boolean transcoding of the string.
+    :param str v: String to be transcoded
+    :return: The boolean transcoding of the string
     """
     if v.lower() in ('yes', 'true', 't', 'y', '1'):
         return True
@@ -34,7 +34,7 @@ class Config(object):
     def set_dataset_dir(self, video_type='OVP'):
         """ Function that sets as class attributes the necessary directories for logging important training information.
 
-        :param str video_type: The Dataset being used, OVP or Youtube.
+        :param str video_type: The Dataset being used, OVP or Youtube
         """
         self.log_dir = save_dir.joinpath(f"exp{self.exp}", video_type, 'logs/split' + str(self.split_index))
         self.score_dir = save_dir.joinpath(f"exp{self.exp}", video_type, 'results/split' + str(self.split_index))
@@ -65,10 +65,10 @@ def get_config(parse=True, **optional_kwargs):
     parser.add_argument('--hidden_size', type=int, default=512, help='Number of features in the LSTM hidden state')
     parser.add_argument('--num_layers', type=int, default=2, help='Number of LSTM recurrent layers')
     parser.add_argument('--n_episodes', type=int, default=10, help='Number of training episodes per epoch')
-    parser.add_argument('--selected_thumbs', type=int, default=5, help='Number of selected thumbnails')
+    parser.add_argument('--selected_thumbs', type=int, default=6, help='Number of selected thumbnails')
 
     # Train
-    parser.add_argument('--n_epochs', type=int, default=200, help='Number of training epochs')
+    parser.add_argument('--n_epochs', type=int, default=150, help='Number of training epochs')
     parser.add_argument('--batch_size', type=int, default=40, help='Size of each batch in training')
     parser.add_argument('--seed', type=int, default=None, help='Chosen seed for generating random numbers')
     parser.add_argument('--exp', type=int, default=1000, help='Experiment serial number')
