@@ -16,6 +16,6 @@ if __name__ == '__main__':
     test_loader = get_loader(test_config.mode, test_config.video_type, test_config.split_index)
     solver = Solver(config, train_loader, test_loader)
 
-    solver.build()
-    solver.evaluate(-1)  # evaluates the set of selected thumbnails using the randomly initialized network
-    solver.train()
+    solver.build()       # build the model
+    solver.evaluate(-1)  # evaluate the randomly initialized (untrained) network
+    solver.train()       # train the model
