@@ -6,9 +6,9 @@ class RL_DiVTS(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers=2):
         """ Scoring LSTM to assess the importance of each video frame.
 
-        :param int input_size: The number of expected features in the input.
+        :param int input_size: The number of expected features in the input
         :param int hidden_size: The number of features in the hidden state
-        :param int num_layers: Number of recurrent layers.
+        :param int num_layers: Number of recurrent layers
         """
         super(RL_DiVTS, self).__init__()
 
@@ -20,7 +20,7 @@ class RL_DiVTS(nn.Module):
         """ Produces frames importance scores from the frame features, using a bidirectional LSTM.
 
         :param torch.Tensor features: Frame features with shape [T, 1, input_size]
-        :return: A tensor with shape [T, 1] containing the frames importance scores in [0, 1].
+        :return: A tensor with shape [T, 1] containing the frames' importance scores in [0, 1]
         """
         self.lstm.flatten_parameters()
         features, _ = self.lstm(features)       # [T, 1, hidden_size * 2]
