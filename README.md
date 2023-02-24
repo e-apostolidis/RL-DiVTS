@@ -100,7 +100,7 @@ The utilized model selection criterion relies on the maximization of the receive
 
 and run
 ```bash
-    sh evaluation/evaluate_all_exp.sh '$exp_id' '$dataset_name' 
+sh evaluation/evaluate_all_exp.sh '$exp_id' '$dataset_name' 
 ```
 where, `$exp_id` is the ID of the first (out of five in total) evaluated experiment, and `$dataset_name` refers to the dataset being used.
 
