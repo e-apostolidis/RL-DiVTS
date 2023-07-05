@@ -109,7 +109,7 @@ where, `$exp_id` is the ID of the first (out of five in total) evaluated experim
 
 If you find our work or code, useful in your work, please cite the following publication:
 
-E. Apostolidis, G. Balaouras, V. Mezaris, I. Patras, "<b>Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning</b>", submitted for publication at the 2023 IEEE Int. Conf. on Image Processing (ICIP 2023).
+E. Apostolidis, G. Balaouras, V. Mezaris, I. Patras, "<b>Selecting a Diverse Set of Aesthetically-Pleasing and Representative Video Thumbnails Using Reinforcement Learning</b>", accepted for publication at the 2023 IEEE Int. Conf. on Image Processing (ICIP 2023).
 </div>
 
 ## License
